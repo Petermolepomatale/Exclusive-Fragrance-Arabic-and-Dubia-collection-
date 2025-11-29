@@ -42,7 +42,7 @@ function displayProducts(productsToShow) {
         
         productCard.innerHTML = `
             <div class="product-img">
-                <img src="${product.image}" alt="${product.name}" onerror="this.src='images/placeholder.jpg'">
+                <img src="${product.image}" alt="${product.name}" onerror="this.src='images/oud.jpg'">
             </div>
             <div class="product-info">
                 <h3 class="product-title">${product.name}</h3>
@@ -185,7 +185,7 @@ function updateCartDisplay() {
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
             <div class="cart-item-img">
-                <img src="${item.image}" alt="${item.name}" onerror="this.src='images/placeholder.jpg'">
+                <img src="${item.image}" alt="${item.name}" onerror="this.src='images/oud.jpg'">
             </div>
             <div class="cart-item-info">
                 <div class="cart-item-title">${item.name}</div>
