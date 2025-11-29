@@ -22,12 +22,28 @@ const mainNav = document.getElementById('main-nav');
 // Search
 const searchInput = document.getElementById('search-input');
 
+// User Profile
+const userIcon = document.getElementById('user-icon');
+const profileOverlay = document.getElementById('profile-overlay');
+const profileClose = document.getElementById('profile-close');
+
+// Checkout
+const goToCheckout = document.getElementById('go-to-checkout');
+
+// Language
+const languageSelect = document.getElementById('language-select');
+
+// Current language
+let currentLanguage = 'en';
+
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     displayProducts(products);
     setupEventListeners();
     updateCartCount();
     loadCartFromStorage();
+    loadContactInfo();
+    loadSocialLinks();
 });
 
 // Display products in the grid
@@ -40,6 +56,8 @@ function displayProducts(productsToShow) {
         productCard.className = 'product-card';
         productCard.setAttribute('data-category', product.category);
         
+        const priceInZAR = (product.price * CONFIG.currency.exchangeRate).toFixed(2);
+        
         productCard.innerHTML = `
             <div class="product-img">
                 <img src="${product.image}" alt="${product.name}" onerror="this.src='images/oud.jpg'">
@@ -47,7 +65,7 @@ function displayProducts(productsToShow) {
             <div class="product-info">
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
-                <div class="product-price">$${product.price.toFixed(2)}</div>
+                <div class="product-price">${CONFIG.currency.symbol} ${priceInZAR}</div>
                 <div class="product-actions">
                     <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
                     <button class="wishlist"><i class="far fa-heart"></i></button>
@@ -135,6 +153,134 @@ function setupEventListeners() {
     mobileMenu.addEventListener('click', function() {
         mainNav.classList.toggle('active');
     });
+    
+    // User profile
+    userIcon.addEventListener('click', function() {
+        profileOverlay.classList.add('active');
+    });
+    
+    profileClose.addEventListener('click', function() {
+        profileOverlay.classList.remove('active');
+    });
+    
+    profileOverlay.addEventListener('click', function(e) {
+        if (e.target === profileOverlay) {
+            profileOverlay.classList.remove('active');
+        }
+    });
+    
+    // Profile tabs
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.profile-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            const tabId = this.getAttribute('data-tab');
+            document.querySelectorAll('.profile-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabId}-content`).classList.add('active');
+        });
+    });
+    
+    // Checkout button
+    goToCheckout.addEventListener('click', function() {
+        if (cart.length === 0) {
+            showNotification('Your cart is empty!');
+            return;
+        }
+        cartOverlay.classList.remove('active');
+        showPage('checkout');
+        updateCheckoutDisplay();
+    });
+    
+    // Navigation links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const page = this.getAttribute('data-page');
+            showPage(page);
+            mainNav.classList.remove('active');
+        });
+    });
+    
+    // Language selector
+    languageSelect.addEventListener('change', function() {
+        changeLanguage(this.value);
+    });
+    
+    // Contact form
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Your message has been sent successfully!');
+            this.reset();
+        });
+    }
+    
+    // Checkout form
+    const checkoutForm = document.getElementById('checkout-form');
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Your order has been placed successfully!');
+            cart = [];
+            updateCartCount();
+            saveCartToStorage();
+            showPage('home');
+        });
+    }
+    
+    // Login form
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Logged in successfully!');
+            profileOverlay.classList.remove('active');
+        });
+    }
+    
+    // Register form
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            if (password !== confirm) {
+                showNotification('Passwords do not match!');
+                return;
+            }
+            showNotification('Account created successfully!');
+            profileOverlay.classList.remove('active');
+        });
+    }
+    
+    // Card number formatting
+    const cardNumber = document.getElementById('card-number');
+    if (cardNumber) {
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+    
+    // Expiry date formatting
+    const cardExpiry = document.getElementById('card-expiry');
+    if (cardExpiry) {
+        cardExpiry.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
 }
 
 // Add product to cart
@@ -171,15 +317,17 @@ function updateCartDisplay() {
     
     if (cart.length === 0) {
         cartItems.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Your cart is empty</p>';
-        cartTotal.textContent = '$0.00';
+        cartTotal.textContent = `${CONFIG.currency.symbol} 0.00`;
         return;
     }
     
     let total = 0;
     
     cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
+        const itemTotal = item.price * item.quantity * CONFIG.currency.exchangeRate;
         total += itemTotal;
+        
+        const priceInZAR = (item.price * CONFIG.currency.exchangeRate).toFixed(2);
         
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
@@ -189,7 +337,7 @@ function updateCartDisplay() {
             </div>
             <div class="cart-item-info">
                 <div class="cart-item-title">${item.name}</div>
-                <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                <div class="cart-item-price">${CONFIG.currency.symbol} ${priceInZAR}</div>
                 <div class="cart-item-actions">
                     <button class="quantity-btn decrease" data-id="${item.id}">-</button>
                     <span class="quantity">${item.quantity}</span>
@@ -202,7 +350,7 @@ function updateCartDisplay() {
         cartItems.appendChild(cartItem);
     });
     
-    cartTotal.textContent = `$${total.toFixed(2)}`;
+    cartTotal.textContent = `${CONFIG.currency.symbol} ${total.toFixed(2)}`;
     
     // Add event listeners to cart item buttons
     document.querySelectorAll('.decrease').forEach(button => {
@@ -355,9 +503,9 @@ function generateBotResponse(message) {
             return "Based on your interest, I'd recommend trying our best-selling Intense Noir. It's a sophisticated scent with notes of bergamot, cardamom, and vanilla that works for various occasions.";
         }
     } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-        return "Our perfumes range from $49.99 to $149.99, depending on the fragrance and size. You can view all prices on our product pages. We also offer special discounts on select items.";
+        return `Our perfumes range from ${CONFIG.currency.symbol} ${(49.99 * CONFIG.currency.exchangeRate).toFixed(0)} to ${CONFIG.currency.symbol} ${(149.99 * CONFIG.currency.exchangeRate).toFixed(0)}, depending on the fragrance and size. You can view all prices on our product pages.`;
     } else if (lowerMessage.includes('shipping') || lowerMessage.includes('delivery')) {
-        return "We offer worldwide shipping. Standard delivery takes 5-7 business days, and express shipping is available for an additional fee. All orders over $100 qualify for free standard shipping.";
+        return `We offer worldwide shipping. Standard delivery takes ${CONFIG.shipping.standardDeliveryDays} business days, and express shipping is available for an additional fee. All orders over ${CONFIG.currency.symbol} ${CONFIG.shipping.freeShippingThreshold} qualify for free standard shipping.`;
     } else if (lowerMessage.includes('return') || lowerMessage.includes('exchange')) {
         return "We have a 30-day return policy for unopened items. If you're not satisfied with your purchase, you can return it for a full refund or exchange. Please see our Returns Policy page for details.";
     } else if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
@@ -367,4 +515,91 @@ function generateBotResponse(message) {
     } else {
         return "I'm here to help you find the perfect perfume! You can ask me about recommendations, pricing, shipping, or anything else about our fragrance collection.";
     }
+}
+
+// Show specific page
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
+    window.scrollTo(0, 0);
+}
+
+// Update checkout display
+function updateCheckoutDisplay() {
+    const checkoutItems = document.getElementById('checkout-items');
+    const checkoutTotal = document.getElementById('checkout-total');
+    
+    if (!checkoutItems || !checkoutTotal) return;
+    
+    checkoutItems.innerHTML = '';
+    
+    if (cart.length === 0) {
+        checkoutItems.innerHTML = '<p>Your cart is empty</p>';
+        checkoutTotal.textContent = `${CONFIG.currency.symbol} 0.00`;
+        return;
+    }
+    
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity * CONFIG.currency.exchangeRate;
+        total += itemTotal;
+        
+        const summaryItem = document.createElement('div');
+        summaryItem.className = 'summary-item';
+        summaryItem.innerHTML = `
+            <span>${item.name} x ${item.quantity}</span>
+            <span>${CONFIG.currency.symbol} ${itemTotal.toFixed(2)}</span>
+        `;
+        
+        checkoutItems.appendChild(summaryItem);
+    });
+    
+    checkoutTotal.textContent = `${CONFIG.currency.symbol} ${total.toFixed(2)}`;
+}
+
+// Change language
+function changeLanguage(language) {
+    currentLanguage = language;
+    
+    if (language === 'ar') {
+        document.body.style.direction = 'rtl';
+        document.body.style.textAlign = 'right';
+        showNotification('تم تغيير اللغة إلى العربية');
+    } else {
+        document.body.style.direction = 'ltr';
+        document.body.style.textAlign = 'left';
+        showNotification('Language changed to English');
+    }
+}
+
+// Load contact info from config
+function loadContactInfo() {
+    const contactPhone = document.getElementById('contact-phone');
+    const contactEmail = document.getElementById('contact-email');
+    const contactAddress = document.getElementById('contact-address');
+    const contactHours = document.getElementById('contact-hours');
+    
+    if (contactPhone) contactPhone.textContent = CONFIG.contact.phone;
+    if (contactEmail) contactEmail.textContent = CONFIG.contact.email;
+    if (contactAddress) contactAddress.textContent = CONFIG.contact.address;
+    if (contactHours) contactHours.textContent = CONFIG.contact.hours;
+}
+
+// Load social links from config
+function loadSocialLinks() {
+    const socialFacebook = document.getElementById('social-facebook');
+    const socialInstagram = document.getElementById('social-instagram');
+    const socialTwitter = document.getElementById('social-twitter');
+    const socialWhatsapp = document.getElementById('social-whatsapp');
+    
+    if (socialFacebook) socialFacebook.href = CONFIG.social.facebook;
+    if (socialInstagram) socialInstagram.href = CONFIG.social.instagram;
+    if (socialTwitter) socialTwitter.href = CONFIG.social.twitter;
+    if (socialWhatsapp) socialWhatsapp.href = CONFIG.social.whatsapp;
 }
