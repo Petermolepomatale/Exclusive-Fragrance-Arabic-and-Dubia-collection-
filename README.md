@@ -1,106 +1,175 @@
-# Arabic & Dubia Perfume Collection Website
+# Arabic & Dubia Perfume Collection
 
-A fully functional e-commerce website for the Arabic & Dubia perfume collection with advanced features.
+A complete e-commerce website for luxury Middle Eastern fragrances with advanced features including multi-page navigation, user profiles, checkout system, and language support.
 
-## ✨ Features
+## 🌟 Features
 
-- 🛍️ **22 Premium Perfumes** - Complete product catalog with detailed descriptions
-- 🛒 **Shopping Cart** - Add/remove items, adjust quantities, persistent storage
-- 🤖 **AI Assistant** - Interactive chatbot for product recommendations
-- 🔍 **Search & Filter** - Find perfumes by name, description, or category
-- 📱 **Responsive Design** - Works perfectly on all devices
-- 💾 **Local Storage** - Cart persists between sessions
-- 🎨 **Modern UI/UX** - Elegant design with smooth animations
+### Pages
+- **Home** - Product catalog with 22 premium perfumes
+- **About** - Company story and information
+- **Contact** - Contact form with business details
+- **Checkout** - Complete payment processing
 
-## 🚀 Quick Start
+### Core Functionality
+- ✅ **Shopping Cart** - Add/remove items, adjust quantities
+- ✅ **Product Filtering** - Filter by category (Oud, Floral, Gourmand, Fresh)
+- ✅ **Search** - Search products by name or description
+- ✅ **User Profiles** - Login, Register, Account Management
+- ✅ **Language Support** - English/Arabic with RTL support
+- ✅ **AI Assistant** - Intelligent product recommendations
+- ✅ **Responsive Design** - Works on all devices
 
-1. **Open the website:**
-   - Simply double-click `index.html` in your browser
-   - Or right-click → Open with → Your browser
+### Checkout Features
+- Shipping information collection
+- Payment card processing
+- Card number auto-formatting (1234 5678 9012 3456)
+- Expiry date auto-formatting (MM/YY)
+- CVV security code
+- Form validation
 
-2. **That's it!** The website is ready to use.
+### Pricing
+- All prices in South African Rand (ZAR)
+- Currency symbol: R
+- Range: R 924.82 - R 2,774.82
 
-## 📁 File Structure
+## 📁 Project Structure
 
 ```
 arabic-dubia-collection/
-├── index.html          # Main website file
-├── styles.css          # All styling
-├── app.js             # Main functionality
-├── products-data.js   # Product catalog
-├── README.md          # This file
-├── push-to-github.bat # Git helper script
-└── images/            # Product images
+├── index.html          # Main HTML file with all pages
+├── styles.css          # Complete styling
+├── app.js              # Enhanced JavaScript functionality
+├── products-data.js    # Product catalog (prices in ZAR)
+├── config.js           # Configuration settings
+├── FEATURES.md         # Detailed feature documentation
+├── README.md           # This file
+└── images/             # Product images
 ```
 
-## 🎨 Customization
+## 🚀 Quick Start
 
-### Change Colors
-Edit `styles.css` (lines 2-8):
-```css
-:root {
-    --primary: #8B4513;    /* Main color */
-    --secondary: #D2691E;  /* Accent color */
-}
-```
+1. Open `index.html` in a web browser
+2. Browse products on the home page
+3. Use filters or search to find products
+4. Add items to cart
+5. Proceed to checkout
+6. Navigate to About and Contact pages
 
-### Add More Products
-Edit `products-data.js`:
+## ⚙️ Configuration
+
+Edit `config.js` to customize:
+
 ```javascript
-{
-    id: 23,
-    name: "New Perfume",
-    description: "Description...",
-    price: 99.99,
-    category: "oud",
-    image: "images/perfume.jpg"
-}
+const CONFIG = {
+    currency: {
+        symbol: 'R',
+        name: 'ZAR'
+    },
+    contact: {
+        phone: '+27 11 123 4567',
+        email: 'info@arabicdubia.com',
+        address: '123 Perfume Street, Johannesburg, South Africa',
+        hours: 'Monday - Saturday: 9:00 AM - 9:00 PM'
+    },
+    social: {
+        facebook: 'https://facebook.com/arabicdubia',
+        instagram: 'https://instagram.com/arabicdubia',
+        twitter: 'https://twitter.com/arabicdubia',
+        whatsapp: 'https://wa.me/27111234567'
+    },
+    shipping: {
+        freeShippingThreshold: 1850,
+        standardDeliveryDays: '5-7',
+        expressDeliveryDays: '2-3'
+    }
+};
 ```
 
-### Update Contact Info
-Edit `index.html` footer section with your details.
+## 🛍️ Product Catalog
 
-## 📤 Push to GitHub
+22 premium fragrances across 4 categories:
+- **Oud** (10 products) - Rich, woody, traditional
+- **Floral** (6 products) - Romantic, elegant
+- **Gourmand** (3 products) - Sweet, warm
+- **Fresh** (3 products) - Light, energizing
 
-**Easy way:** Double-click `push-to-github.bat`
+Price range: R 924.82 - R 2,774.82
 
-**Manual way:**
-```bash
-git add .
-git commit -m "Update website"
-git push
-```
+## 💳 Payment Processing
 
-## 🌐 Enable GitHub Pages (Free Hosting)
+The checkout page includes:
+- Full shipping address collection
+- Credit/Debit card payment form
+- Auto-formatting for card details
+- Secure form validation
+- Order summary with itemized pricing
 
-1. Go to your GitHub repository
-2. Click **Settings** → **Pages**
-3. Select **main** branch
-4. Click **Save**
-5. Your site will be live at:
-   `https://petermolepomatale.github.io/Exclusive-Fragrance-Arabic-and-Dubia-collection-/`
+## 🌐 Language Support
 
-## 🛠️ What's Included
+- **English** - Default language
+- **Arabic** - Full RTL (Right-to-Left) support
+- Switch languages using the header dropdown
 
-✅ Shopping cart with quantity management  
-✅ AI chatbot for customer service  
-✅ Search functionality  
-✅ Category filters (Oud, Floral, Gourmand, Fresh)  
-✅ Responsive mobile design  
-✅ Wishlist feature  
-✅ Price calculations  
-✅ Smooth animations  
-✅ 100% client-side (no server needed)
+## 📱 Responsive Design
 
-## 📱 Browser Support
+Optimized for:
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (< 768px)
 
-- Chrome, Firefox, Safari, Edge (latest versions)
-- Mobile browsers (iOS Safari, Chrome Mobile)
+## 🤖 AI Assistant
 
-## 📞 Contact
+Interactive chatbot that helps with:
+- Product recommendations
+- Pricing information
+- Shipping policies
+- Return policies
+- General inquiries
 
-For questions: info@arabicdubia.com
+## 📞 Contact Information
+
+- **Phone**: +27 11 123 4567
+- **Email**: info@arabicdubia.com
+- **Address**: 123 Perfume Street, Johannesburg, South Africa
+- **Hours**: Monday - Saturday: 9:00 AM - 9:00 PM
+
+## 🔗 Social Media
+
+- Facebook: [/arabicdubia](https://facebook.com/arabicdubia)
+- Instagram: [@arabicdubia](https://instagram.com/arabicdubia)
+- Twitter: [@arabicdubia](https://twitter.com/arabicdubia)
+- WhatsApp: [+27 11 123 4567](https://wa.me/27111234567)
+
+## 🛠️ Technologies Used
+
+- HTML5
+- CSS3 (with CSS Grid and Flexbox)
+- Vanilla JavaScript (ES6+)
+- Font Awesome Icons
+- LocalStorage for cart persistence
+
+## 📝 Recent Updates
+
+### Latest Commit
+- ✅ Added About, Contact, and Checkout pages
+- ✅ Implemented user profile system (Login/Register/Account)
+- ✅ Added language switcher (English/Arabic)
+- ✅ Converted all prices to South African Rand (ZAR)
+- ✅ Added complete payment processing with card details
+- ✅ Removed unused files and cleaned up project
+- ✅ Enhanced AI assistant with ZAR-aware responses
+
+## 📄 License
+
+© 2023 Arabic & Dubia Perfume Collection. All Rights Reserved.
+
+## 🤝 Support
+
+For support or inquiries, please contact us through:
+- Email: info@arabicdubia.com
+- Contact form on the website
+- Social media channels
 
 ---
 
-**© 2023 Arabic & Dubia Perfume Collection. All Rights Reserved.**
+**Live Demo**: Open `index.html` in your browser to see the website in action!
